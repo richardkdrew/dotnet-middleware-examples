@@ -14,9 +14,13 @@ namespace MiddlewareExamples
         }
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
-        {	
+        {	            
+            // Separate file middleware, adds some basic request metrics to the response header and then 
+            // has the option to allow execution (passthrough) to the next delegate in the pipeline (uses app.Use() internally).
+            app.UseMetrics();
+
             // Inline middleware, runs a command and then has the option to allow execution (passthrough)
-            //  to the next delegate in the pipeline (app.Use()).
+            // to the next delegate in the pipeline (app.Use()).
             app.Use((context, next) =>
             {
                 // Add an arbitrary value to the response
@@ -26,7 +30,7 @@ namespace MiddlewareExamples
                 return next();
             });
 
-            // Inline middleware that branches the pipeline based on the logic suplied
+            // Inline middleware that branches the pipeline based on the logic supplied
             // example 1 - the path '/my-heartbeat' is matched the branch will be run.
             // This is the final step in the chain, there's no next delegate so if you
             // put anything below it will not be executed as part of the pipeline (app.Map()).
